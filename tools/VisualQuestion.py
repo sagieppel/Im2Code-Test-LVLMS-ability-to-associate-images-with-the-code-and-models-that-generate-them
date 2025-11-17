@@ -7,7 +7,6 @@ import API_KEYS
 from openai import OpenAI
 
 import json_pkl
-import tools.Code_Exec as Code_Exec
 import textwrap
 import cv2
 import os
