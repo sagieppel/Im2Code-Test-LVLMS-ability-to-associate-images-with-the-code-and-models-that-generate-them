@@ -25,7 +25,7 @@ The code supports APIs from OpenAI, Together.AI (Qwen, LLama), Grok,Gemini, and 
 
 ## 3. Run test (Run_Test_im2model2code.py)
 
-In **Run_Test_im2model2code.py** in **__main__*** set path to the  SciTextures images and code main folders.
+In **Run_Test_im2model2code.py** in **__main__** set path to the  SciTextures images and code main folders.
 
 **code_main_dir = r"Scitexture/code_and_data/"**
 
