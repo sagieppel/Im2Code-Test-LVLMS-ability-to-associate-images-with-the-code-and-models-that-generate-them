@@ -8,7 +8,8 @@ For more details on the method, see: [SciTextures: Collecting and Connecting Vis
 
 If you are interested in directly inferring code and simulation, and models  from images, see the [Im2Sim repository.](https://github.com/sagieppel/Collecting-models-and-code-for-Visual-patterns-and-textures-generation-using-Agentic-AI)
 
-​![](/scheme.jpg)
+​![](/Im2Code.jpg)
+​![](/Im2Desc.jpg)
 
 # How to use:
 
