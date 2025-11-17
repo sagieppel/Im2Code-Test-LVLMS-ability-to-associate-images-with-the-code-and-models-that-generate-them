@@ -18,7 +18,7 @@ If you are interested in directly inferring code and simulation, and models  fro
 
 The code supports APIs from OpenAI, Together.AI (Qwen, LLama), Grok,Gemini, and Claude. You can add other APIs to tools/ToolVisualQuestion.py.
 
-## 3. Run test
+## 3. Run test (Run_Test_im2model2code.py)
 
 In **Run_Test_im2model2code.py** in **__main__*** set path to the  SciTextures images and code main folders.
 
