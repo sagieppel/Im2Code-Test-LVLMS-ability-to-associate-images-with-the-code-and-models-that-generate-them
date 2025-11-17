@@ -11,8 +11,7 @@ If you are interested in directly inferring code and simulation, and models  fro
   <img src="/Im2Code.jpg" width="45%">
   <img src="/Im2Desc.jpg" width="45%">
 </p>
-<!-- ​![](/Im2Code.jpg)
-​![](/Im2Desc.jpg) -->
+
 
 # How to use:
 
@@ -28,7 +27,7 @@ The code supports APIs from OpenAI, Together.AI (Qwen, LLama), Grok,Gemini, and 
 
 In **Run_Test_im2model2code.py** in **__main__*** set path to the  SciTextures images and code main folders.
 
-**code_main_dir = r"Scitexture/code_and_data/"  **
+**code_main_dir = r"Scitexture/code_and_data/"**
 
 **images_main_dir = r"Scitexture/images/"** 
 
