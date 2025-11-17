@@ -7,9 +7,12 @@ The code runs on the [SciTextures dataset,](https://zenodo.org/records/17485502)
 For more details on the method, see: [SciTextures: Collecting and Connecting Visual Patterns, Models, and Code Across Science and Art.](https://arxiv.org/pdf/2511.01817) 
 
 If you are interested in directly inferring code and simulation, and models  from images, see the [Im2Sim repository.](https://github.com/sagieppel/Collecting-models-and-code-for-Visual-patterns-and-textures-generation-using-Agentic-AI)
-
-​![](/Im2Code.jpg)
-​![](/Im2Desc.jpg)
+<p>
+  <img src="/Im2Code.jpg" width="45%">
+  <img src="/Im2Desc.jpg" width="45%">
+</p>
+<!-- ​![](/Im2Code.jpg)
+​![](/Im2Desc.jpg) -->
 
 # How to use:
 
