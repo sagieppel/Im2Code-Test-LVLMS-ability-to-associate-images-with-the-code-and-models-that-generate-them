@@ -14,17 +14,18 @@ import json_pkl
 
 def run_test_text2im(code_main_dir,
                      images_main_dir, # images main dir (Scitexture/images/
-                     relative_image_path=False, # True if the image dir is a subdir of the code dir
+                     relative_image_path=True, # True if the image dir is a subdir of the code dir
                      num_choices=10, # number of choices in the multichoice tes
                      max_question=100, # Max questions per text
-                     num_samples=1, # Number of referance image per model
-                     mode="code", # "description" # match images to code or to model description
+                     num_samples=1, # Number of referance image per model # "description" # match images to code or to model description
+                     mode = "code",
                      display=False, # for debug
                      error_dir="",# error dir where mistakes will be saved
                      remove_code_comments=False, # Remove comments from code
                      outdir="", # output dir
                      single_image=True, # Merge all images into single image (recomanded) not all LVLMs can deal with many images)
-                     model=""):
+                     model="",
+                     code_desc_file = "shader.fragment"):
     results={"correct":0,"wrong":0,"fail":0}
 #-----------------Create file structure (dictionary containing images and associated code)------------------------------------------
     im_data={}
@@ -34,24 +35,23 @@ def run_test_text2im(code_main_dir,
                   img_dir= code_main_dir + "//" + dr + "//" + images_main_dir
         else:
             img_dir= images_main_dir + "//" + dr + "//"
-        if mode=="code": # match image to code
-            file_path = code_main_dir + "//" + dr + "//generate.py"
-        else: # match image to description
-            file_path = code_main_dir + "//" + dr + ("//Description.txt")
-        if not os.path.exists(file_path):
-              continue
+
+
+        file_path = code_main_dir + "//" + dr + "//" + code_desc_file
+        if not os.path.exists(file_path):  continue
+
 
         if not os.path.isdir(img_dir)  or len(os.listdir(img_dir))<num_samples: continue
 
         with open(file_path, "r") as fl:
             txt_data[dr] = fl.read()
-            if mode == "code" and remove_code_comments:
+            if  remove_code_comments:
                 txt_data[dr] = clean_code_comments.remove_non_executable_code(txt_data[dr])
         im_data[dr]=[]
 
         for fl in os.listdir(img_dir):
             if ".jpg" in fl or ".png" in fl:
-                 im_data[dr].append(img_dir + fl)
+                 im_data[dr].append(os.path.join(img_dir,fl))
 
 
 #-------------------run test-----------------------------------------------------------------------
@@ -170,38 +170,42 @@ def run_test_text2im(code_main_dir,
 def run_test_multi_model(
         code_main_dir,images_main_dir,
         main_outdir,
+        code_desc_file,
         max_questions=100,
-        num_reference=3,
+        num_samples=3,
         num_choices=10,
+        relative_image_path=True,
         single_img=True,
-        mode="description",#"code",#"code",  # description
+        mode="code",#"code",  # description "description",#
         remove_code_comments=False,
         skip_exist=True
 ):
     if not os.path.exists(main_outdir):
         os.mkdir(main_outdir)
-    openai_models = ["gpt-5-mini", "gpt-5"]  # , "gpt-oss-120b", "gpt-oss-20b"]
-    together_models = [ "Qwen/Qwen2.5-VL-72B-Instruct","google/gemma-3n-E4B-it", "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","meta-llama/Llama-4-Scout-17B-16E-Instruct"]
-    gemini_models = ["gemini-2.5-pro", "gemini-2.5-flash"]
-    grok_models = ["grok-4-fast-reasoning", "grok-4-fast-non-reasoning", "grok-4"]
-    claude_models = ["claude-sonnet-4-5-20250929"]
-    combine_list = openai_models+gemini_models+together_models+gemini_models+grok_models#+claude_models
 
-    for model in combine_list:
+    model_list = ["google/gemini-3.1-flash-lite-preview","openai/gpt-5.4", "google/gemini-3.1-pro-preview","qwen/qwen3.5-35b-a3b","nvidia/llama-nemotron-embed-vl-1b-v2:free","moonshotai/kimi-k2.5","google/gemma-4-26b-a4b-it","x-ai/grok-4.20","qwen/qwen3.6-plus:free","openai/gpt-5.4-mini","z-ai/glm-5v-turbo","anthropic/claude-sonnet-4.6"]
+
+    #model_list = openai_models+gemini_models+together_models+gemini_models+grok_models#+claude_models
+
+    for model in model_list:
         model_simple_name = model.replace(".", "").replace(" ", "").replace("-", "_").replace("/","_").replace(r"\\",r"_")
         if os.path.exists(main_outdir + "//" + model_simple_name + ".pkl") and skip_exist: continue
-        stats = run_test_text2im(
-                         code_main_dir,images_main_dir,
-                         max_question=max_questions,
-                         num_choices=num_choices,
-                         num_samples=num_reference,
-                         mode=mode,  # description
-                         remove_code_comments=remove_code_comments,
-                         display=False,
-                         model=model,
-                         error_dir=main_outdir + "//" + model_simple_name + "Fail//",
+        stats = run_test_text2im(code_main_dir=code_main_dir,
+                         images_main_dir=images_main_dir,
+                         code_desc_file=code_desc_file, # images main dir (Scitexture/images/ if the image dir is sub folder of the code dire put the sub patg
+                         num_choices=num_choices,  # number of choices in the multichoice tes
+                         max_question=max_questions,  # Max questions per text
+                         num_samples=num_samples, # Number of referance image per model  # "description" # match images to code or to model description
+                         relative_image_path=relative_image_path,  # True if the image dir is a subdir of the code dir
+                         error_dir= main_outdir + "//" + model_simple_name + "Fail//",  # error dir where mistakes will be saved
+                         remove_code_comments=remove_code_comments,  # Remove comments from code
+                         outdir=main_outdir + "//" + model_simple_name,  # output dir
                          single_image=single_img,
-                         outdir=main_outdir + "//" + model_simple_name)
+                         mode=mode,
+                         model=model
+                         )
+
+
 
         json_pkl.save_json(stats,main_outdir+"//"+model_simple_name+".json")
         json_pkl.save_pkl(stats, main_outdir + "//" + model_simple_name + ".pkl")
@@ -214,22 +218,33 @@ def run_test_multi_model(
 
 if __name__ == "__main__":
     # >>>>> EDIT PATH BELOW TO YOUR DATA ROOT <<<<<
-    code_main_dir = r"Scitexture/code_and_data/" # Code main dir from the SciTextures dataset
-    images_main_dir = r"Scitexture/images/" # Image main dir from the SciTextures dataset
-    out_dir = r"output_Result_dir//" # Output dir where results will be saved
-    error_dir = out_dir + "//Fail//" # Output subdir were the fail cases (where the model was wrong will be saved)
-    model = "gpt-5"#, "human"
+    #code_main_dir = r"/media/fogbrain/6TB/python_project/Code2_IM_Desc/shadertoy_test/" # Code main dir from the SciTextures dataset
+    code_main_dir = r"Scitexture_Full_110K_images_jpg_format/code_and_data"#/media/fogbrain/6TB/python_project/Code2_IM_Desc/Scitextures_Main/"
+    images_dir = "Scitexture_Full_110K_images_jpg_format/images"
+    # images_main_dir = "0000000000" # Image main dir from the SciTextures dataset
+    # code_desc_file = "shader.fragment"
+    out_dir = r"output_results_test//"  # Output dir where results will be saved
+    code_desc_file = "generate.py"
 
-    run_test_text2im(code_main_dir=code_main_dir,
-                    images_main_dir=images_main_dir,  # images main dir (Scitexture/images/
+
+
+
+    error_dir = out_dir + "//Fail//" # Output subdir were the fail cases (where the model was wrong will be saved)
+    model = "google/gemini-3.1-flash-lite-preview"#"openai/gpt-5.4"#, "human" "google/gemini-3.1-pro-preview"
+
+    run_test_text2im(code_main_dir=code_main_dir,# code main dir
+                    images_main_dir=images_dir,   # images main dir (Scitexture/images/ if the image dir is sub folder of the code dire put the sub patg
+                     code_desc_file=code_desc_file, # name of code or desciption file
                     num_choices=10,  # number of choices in the multichoice tes
                     max_question=100,  # Max questions per text
-                    num_samples=3,  # Number of referance image per model
-                    mode="code",  # "description" # match images to code or to model description
+                    num_samples=3,  # Number of referance image per model  # "description" # match images to code or to model description
+                    relative_image_path=False,  # True if the image dir is a subdir of the code dir
                     error_dir=error_dir,  # error dir where mistakes will be saved
                     remove_code_comments=False,  # Remove comments from code
                     outdir=out_dir,  # output dir
-                    model=model)
+                    mode = "code",
+                    model=model
+                  )
 
 
     #run_test_multi_model(code_main_dir=code_main_dir,images_main_dir=images_main_dir,main_outdir=out_dir)
