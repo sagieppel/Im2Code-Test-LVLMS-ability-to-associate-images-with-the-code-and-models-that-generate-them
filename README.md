@@ -29,7 +29,9 @@ In **Run_Test_im2code_im2desc.py** in **__main__** set path to the  SciTextures 
 
 **code_main_dir = r"Scitexture/code_and_data/"**
 
-**images_main_dir = r"Scitexture/images/"** 
+**images_dir = r"Scitexture/images/"** 
+
+**code_desc_file = "generate.py"** # name of code/description file
 
 **out_dir = r"output_Result_dir//"**
 
